@@ -8,3 +8,4 @@
 .DS_Store
 AppRTCDemo.xcodeproj/project.xcworkspace
 AppRTCDemo.xcodeproj/xcuserdata
+libs/*.a
