@@ -83,7 +83,7 @@ for f in *.a; do
 done
 popd
 
-pushd ../../out_ios/Debug-iphoneos
+pushd trunk/out_ios/Debug-iphoneos
 for f in *.a; do
     if [ -f "../../out_sim/Debug/$f" ]; then
         echo "-- Create fat static library $f"
