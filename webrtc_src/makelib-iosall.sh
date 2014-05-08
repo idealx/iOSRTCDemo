@@ -1,3 +1,5 @@
+BUILD_CONFIG=Release # or Debug
+
 function fetch() {
     echo "-- fetching webrtc"
     gclient config http://webrtc.googlecode.com/svn/trunk/
@@ -23,7 +25,7 @@ function buildsim() {
     echo "-- building webrtc"
     pushd trunk
     gclient runhooks
-    ninja -C out_sim/Debug iossim AppRTCDemo
+    ninja -C out_sim/$BUILD_CONFIG iossim AppRTCDemo
     popd
     echo "-- webrtc arch=mac has been sucessfully built"
 }
@@ -39,7 +41,7 @@ function wrios() {
 function buildios() {
     echo "-- building webrtc ios"
     pushd trunk
-    wrios && gclient runhooks && ninja -C out_ios/Debug-iphoneos AppRTCDemo
+    wrios && gclient runhooks && ninja -C out_ios/$BUILD_CONFIG-iphoneos AppRTCDemo
     popd
     echo "-- webrtc has been sucessfully built"
 }
@@ -47,7 +49,7 @@ function buildios() {
 
 function launch() {
     echo "-- launching on device"
-    ideviceinstaller -i trunk/out_ios/Debug-iphoneos/AppRTCDemo.app
+    ideviceinstaller -i trunk/out_ios/$BUILD_CONFIG-iphoneos/AppRTCDemo.app
     echo "-- launch complete"
 }
  
@@ -56,7 +58,7 @@ function fail() {
     exit 1
 }
  
-fetch || fail
+#fetch || fail
 
 # simulator
 wrsim || fail
@@ -71,11 +73,11 @@ buildios || fail
 # combian libs
 mkdir -p trunk/out_libs
 
-pushd trunk/out_sim/Debug
+pushd trunk/out_sim/$BUILD_CONFIG
 for f in *.a; do
-    if [ -f "../../out_ios/Debug-iphoneos/$f" ]; then
+    if [ -f "../../out_ios/$BUILD_CONFIG-iphoneos/$f" ]; then
         echo "-- Create fat static library $f"
-        lipo -create "$f" "../../out_ios/Debug-iphoneos/$f" -output "../../out_libs/$f"
+        lipo -create "$f" "../../out_ios/$BUILD_CONFIG-iphoneos/$f" -output "../../out_libs/$f"
     else
         echo "$f was no build for iPhone"
         cp "$f" "../../out_libs/"
@@ -83,11 +85,11 @@ for f in *.a; do
 done
 popd
 
-pushd trunk/out_ios/Debug-iphoneos
+pushd trunk/out_ios/$BUILD_CONFIG-iphoneos
 for f in *.a; do
-    if [ -f "../../out_sim/Debug/$f" ]; then
+    if [ -f "../../out_sim/$BUILD_CONFIG/$f" ]; then
         echo "-- Create fat static library $f"
-        lipo -create "$f" "../../out_sim/Debug/$f" -output "../../out_libs/$f"
+        lipo -create "$f" "../../out_sim/$BUILD_CONFIG/$f" -output "../../out_libs/$f"
     else
         echo "$f was no build for simulator"
         cp "$f" "../../out_libs/"
