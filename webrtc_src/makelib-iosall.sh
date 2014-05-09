@@ -58,7 +58,7 @@ function fail() {
     exit 1
 }
  
-#fetch || fail
+fetch || fail
 
 # simulator
 wrsim || fail
