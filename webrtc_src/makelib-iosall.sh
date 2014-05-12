@@ -4,7 +4,7 @@ function fetch() {
     echo "-- fetching webrtc"
     gclient config http://webrtc.googlecode.com/svn/trunk/
     echo "target_os = ['ios', 'mac']" >> .gclient
-    gclient sync
+    gclient sync --force
     echo "-- webrtc has been sucessfully fetched"
 }
  
